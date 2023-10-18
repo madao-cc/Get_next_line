@@ -23,7 +23,7 @@ void	*ft_memalloc(size_t nitems, size_t size)
 	ptr = malloc(nitems * size);
 	if (!ptr)
 		return (NULL);
-	while (n-- > 0)
+	while (n--)
 		ptr[i++] = '\0';
 	return (ptr);
 }

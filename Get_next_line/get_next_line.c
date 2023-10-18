@@ -77,8 +77,6 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = ft_memalloc((BUFFER_SIZE + 1), sizeof(char));
-	if (!buffer)
-		return (NULL);
 	while (ft_check_newline(str) == 0 && count > 0)
 	{
 		count = read(fd, buffer, BUFFER_SIZE);
