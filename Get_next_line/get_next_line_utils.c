@@ -12,10 +12,28 @@
 
 #include "get_next_line.h"
 
+void	*ft_memalloc(size_t nitems, size_t size)
+{
+	char	*ptr;
+	int	i;
+	int	n;
+
+	i = 0;
+	n = nitems * size;
+	ptr = malloc(nitems * size);
+	if (!ptr)
+		return (NULL);
+	while (n-- > 0)
+		ptr[i++] = '\0';
+	return (ptr);
+}
+
 int	ft_strlen(char *str)
 {
 	int		i;
 
+	if (!str)
+		return (0);
 	i = 0;
 	while (str[i])
 		i++;
@@ -25,14 +43,14 @@ int	ft_strlen(char *str)
 char	*ft_strdup(char *str)
 {
 	int		i;
-	char	*result;
+	char		*result;
 	
+	if (!*str)
+		return (NULL);
 	i = 0;
 	while (str[i] != '\n' && str[i])
 		i++;
-	result = malloc(sizeof(char) * (i + 2));
-	if (!result)
-		return (NULL);
+	result = ft_memalloc((i + 2), sizeof(char));
 	i = 0;
 	while (str[i] != '\n' && str[i])
 	{
@@ -40,22 +58,26 @@ char	*ft_strdup(char *str)
 		i++;
 	}
 	result[i] = str[i];
-	result[++i] = '\0';
 	return (result);
 }
 
 char	*ft_broom(char *str)
 {
 	int		i;
-	char	*result;
+	char		*result;
 	int		j;
 	int		length;
 
+	if (!*str)
+	{
+		free(str);
+		return (NULL);
+	}
 	length = ft_strlen(str);
 	i = 0;
 	while (str[i] != '\n' && str[i] != '\0')
 		i++;
-	result = malloc(sizeof(char) * (length - i) + 1);
+	result = ft_memalloc(((length - i) + 1), sizeof(char));
 	j = 0;
 	while (str[i])
 	{

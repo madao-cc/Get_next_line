@@ -23,10 +23,12 @@
 # include <fcntl.h>
 
 char	*ft_strdup(char *str);
-int		ft_strlen(char *str);
+int	ft_strlen(char *str);
 char	*get_next_line(int fd);
-int		ft_check_newline(char *str);
+int	ft_check_newline(char *str);
 char	*ft_save_in_temp(char *receive, char *str);
 char	*ft_broom(char *str);
+void	*ft_clean(char **buffer, char **str);
+void	*ft_memalloc(size_t nitems, size_t size);
 
 # endif

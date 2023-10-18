@@ -12,41 +12,35 @@
 
 #include "get_next_line.h"
 
-char	*ft_save_in_temp(char *receive, char *str)
+char	*ft_save_in_temp(char *buffer, char *str)
 {
 	int		i;
 	int		j;
 	int		lenght;
-	char	*result;
+	char		*result;
 
-	i = 0;
 	if (!str)
-	{
-		str = malloc(sizeof(char) * 1);
-		if (!str)
-			return (NULL);
-		str[i] = '\0';
-	}
-	lenght = ft_strlen(receive) + ft_strlen(str);
-	result = malloc(sizeof(char) * (lenght + 1));
-	if (!result)
+		ft_memalloc(1, sizeof(char));
+	if (!buffer)
 		return (NULL);
+	lenght = ft_strlen(buffer) + ft_strlen(str);
+	result = ft_memalloc((lenght + 1), sizeof(char));
 	j = 0;
+	i = 0;
 	while (str[i])
 	{
 		result[i] = str[i];
 		i++;
 	}
-	while (receive[j])
+	while (buffer[j])
 	{
-		result[i++] = receive[j++];
+		result[i++] = buffer[j++];
 	}
-	result[i] = '\0';
 	free(str);
 	return (result);
 }
 
-int		ft_check_newline(char *str)
+int	ft_check_newline(char *str)
 {
 	int		i;
 
@@ -64,27 +58,37 @@ int		ft_check_newline(char *str)
 	return (0);
 }
 
+void	*ft_clean(char **buffer, char **str)
+{
+	free(*str);
+	free(*buffer);
+	*str = NULL;
+	return (NULL);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*str;
-	int			sz;
-	char		*receive;
+	int		count;
+	char		*buffer;
 	char		*final;
 
-	sz = 1;
-	if (fd < 1)
+	count = 1;
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	receive = malloc(sizeof(BUFFER_SIZE + 1));
-	if (!receive)
-		return (0);
-	while (ft_check_newline(str) == 0 && sz > 0)
+	buffer = ft_memalloc((BUFFER_SIZE + 1), sizeof(char));
+	if (!buffer)
+		return (NULL);
+	while (ft_check_newline(str) == 0 && count > 0)
 	{
-		sz = read(fd, receive, BUFFER_SIZE);
-		receive[sz] = '\0';
-		str =  ft_save_in_temp(receive, str);
+		count = read(fd, buffer, BUFFER_SIZE);
+		if (count == -1)
+			return (ft_clean(&str, &buffer));
+		buffer[count] = '\0';
+		str =  ft_save_in_temp(buffer, str);
 	}
 	final = ft_strdup(str);
 	str = ft_broom(str);
-	free(receive);
+	free(buffer);
 	return (final);
 }
