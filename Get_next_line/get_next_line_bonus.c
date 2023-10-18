@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madao-da <madao-da@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/17 14:58:57 by madao-da          #+#    #+#             */
-/*   Updated: 2023/10/17 17:06:32 by madao-da         ###   ########.fr       */
+/*   Created: 2023/10/18 14:01:58 by marvin            #+#    #+#             */
+/*   Updated: 2023/10/18 14:01:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_save_in_temp(char *buffer, char *str)
 {
@@ -68,25 +68,25 @@ void	*ft_clean(char **buffer, char **str)
 
 char	*get_next_line(int fd)
 {
-	static char	*str;
+	static char	*str[4096];
 	int		count;
 	char		*buffer;
 	char		*final;
 
 	count = 1;
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if ((fd < 0 && fd > 4096) || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = ft_memalloc((BUFFER_SIZE + 1), sizeof(char));
 	while (ft_check_newline(str) == 0 && count > 0)
 	{
 		count = read(fd, buffer, BUFFER_SIZE);
 		if (count == -1)
-			return (ft_clean(&str, &buffer));
+			return (ft_clean(&str[fd], &buffer));
 		buffer[count] = '\0';
-		str =  ft_save_in_temp(buffer, str);
+		str[fd] =  ft_save_in_temp(buffer[fd], str);
 	}
-	final = ft_strdup(str);
-	str = ft_broom(str);
+	final = ft_strdup(str[fd]);
+	str[fd] = ft_broom(str[fd]);
 	free(buffer);
 	return (final);
 }

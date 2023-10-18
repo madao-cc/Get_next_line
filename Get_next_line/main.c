@@ -3,12 +3,11 @@
 int	main(void)
 {
 	int		fd;
-
+	int		i;
+	
+	i = 0;
 	fd = open("texto.txt", O_RDONLY);
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
+	while (i++ < 5)
 	printf("%s", get_next_line(fd));
 	return (0);
 }
