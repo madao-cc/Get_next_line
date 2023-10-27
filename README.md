@@ -1,24 +1,14 @@
 # Get Next Line
-<p align="center">
-	<b><i>Reading a line on a fd is way too tedious</i></b><br>
-</p>
 
-<p align="center">
-	<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/jdecorte-be/42-Get-next-line?color=lightblue" />
-	<img alt="Number of lines of code" src="https://img.shields.io/tokei/lines/github/jdecorte-be/42-Get-next-line?color=critical" />
-	<img alt="Code language count" src="https://img.shields.io/github/languages/count/jdecorte-be/42-Get-next-line?color=yellow" />
-	<img alt="GitHub top language" src="https://img.shields.io/github/languages/top/jdecorte-be/42-Get-next-line?color=blue" />
-	<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/jdecorte-be/42-Get-next-line?color=green" />
-</p>
+> _The aim of this project is to make you code a function that returns a line, read from a file descriptor._
 
-<h3 align="center">
-	<a href="#%EF%B8%8F-about">About</a>
-	<span> · </span>
-	<a href="#%EF%B8%8F-usage">Usage</a>
-	<span> · </span>
-	<a href="#-testing">Testing</a>
-</h3>
+	You will understand how files are opened, read and closed in an OS,
+	and how they are interpreted by a programming language for further analysis.
+	This task is crucial to understand for a future programmer since much of the time is based
+	on manipulating files for data management and persistence.
+	This project consists of coding a function that returns one line at a time from a text file.
 
+For more detailed information, look at the [**subject of this project**](https://github.com/jdecorte-be/42-Get-next-line/blob/master/en.subject.pdf).
 
 # Introduction
 - You are now starting to understand that it will get tricky to read data from a file descriptor if you don’t know its size beforehand. What size should your buffer be? How many times do you need to read the file descriptor to retrieve the data ?
@@ -80,10 +70,3 @@ The project **get_next_line** is straight forward and leaves very little room fo
 - To succeed **get_next_line** with a single static variable.
 
 - To be able to manage multiple file descriptor with your **get_next_line**. For example, if the file descriptors 3, 4 and 5 are accessible for reading, then you can call **get_next_line** once on 3, once on 4, once again on 3 then once on 5 etc. without losing the reading thread on each of the descriptors.
-
-# Implementation
-- Each time it is called, the function will try to find if the input file descriptor has already been processed. It will then either retreive the corresponding 'GNL handlers' object or create it if not found. This object is then send to the 'gnl_read' function that will read from the file descriptor and take care of the overflow. Any error during the function will abort it and send a '-1' error code.
-
-- 'gnl_read' will read and push the file strings into a list. All the strings in the list are then assembled into a single string. Trailing characters after the first newline character are cut and saved for later. If the end of file is detected, we exit and return 0 ; else 1.
-
-- 'gnl_pipe' will search a specific file descriptor from the static list of 'GNL handlers'. If not found, will create and initialize one for us. Each 'GNL handlers' contains the file descriptor value, a list of strings, and an EOF flag.
