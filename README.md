@@ -1,72 +1,109 @@
-# Get Next Line
+# Get_next_line
 
-> _The aim of this project is to make you code a function that returns a line, read from a file descriptor._
+> **Objective:** Develop a function that reads and returns the next line from a file descriptor.
 
-	You will understand how files are opened, read and closed in an OS,
-	and how they are interpreted by a programming language for further analysis.
-	This task is crucial to understand for a future programmer since much of the time is based
-	on manipulating files for data management and persistence.
-	This project consists of coding a function that returns one line at a time from a text file.
+## Table of Contents
 
-For more detailed information, look at the [**subject of this project**](https://github.com/jdecorte-be/42-Get-next-line/blob/master/en.subject.pdf).
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Files in the Repository](#files-in-the-repository)
+- [Usage](#usage)
+- [Implementation Details](#implementation-details)
+- [Testing](#testing)
+- [Learning Outcomes](#learning-outcomes)
+- [Acknowledgments](#acknowledgments)
 
-# Introduction
-- You are now starting to understand that it will get tricky to read data from a file descriptor if you don’t know its size beforehand. What size should your buffer be? How many times do you need to read the file descriptor to retrieve the data ?
+## Project Overview
 
-- It is perfectly normal and natural that, as a programmer, you would want to read a “line” that ends with a line break from a file descriptor. For example each command that you type in your shell or each line read from a flat file.
+The **Get_next_line** project focuses on creating a function that reads a file line by line. This task enhances understanding of file operations in C, including opening, reading, and closing files, and managing static variables for persistent state across function calls.
 
-- Thanks to the project get_next_line, you will finally be able to write a function that will allow you to read a line ending with a newline character from a file descriptor. You’ll be able to add this function to your libft if you feel like it and most importantly, use it in all the future projects that will require it.
+## Key Features
 
- - This project will not only allow you to add a very convenient function to your collection, but it will also allow you to learn a highly interesting new concept in C programming: static variables.
+- **Line-by-Line Reading:** Retrieves text from a file one line at a time.
+- **Buffer Management:** Efficiently handles data using a buffer to accommodate varying line lengths.
+- **Static Variable Usage:** Maintains state between function calls to manage data that doesn't fit into a single buffer.
 
-- You will also gain a deeper understanding of allocations, whether they happen on the stack memory or in the heap memory the manipulation and the life cycle of a buffer, the unexpected complexity implied in the use of one or many static variables.
+## Files in the Repository
 
-- Your respect of the Norm will improve the rigor of your programming. We also suspect that your approach to coding will change when you will discover that the initial state of a variable in a function can vary depending on the call of that very function.
+- `get_next_line.c`: Contains the main `get_next_line` function.
+- `get_next_line.h`: Header file with function prototypes and necessary macros.
+- `get_next_line_utils.c`: Utility functions supporting `get_next_line`.
+- `Makefile`: Automates the compilation process.
+- `README.md`: This documentation file.
 
-# Objectives
-- Write a function that returns a line read from a file descriptor.
+## Usage
 
-- What we call a “line” is a succession of characters that end with **’\n’** (ascii code 0x0a) or with **End Of File (EOF)**.
+To integrate `get_next_line` into your project:
 
-- Your function must be prototyped as follow :
-```c
-int get_next_line(const int fd, char **line);
-```
+1. **Compilation:** Use the provided `Makefile`:
+   ```bash
+   make
+   ```
+   This generates the object files and the necessary library.
 
-- The first parameter is the file descriptor that will be used to read.
+2. **Function Prototype:**
+   ```c
+   char *get_next_line(int fd);
+   ```
+   - `fd`: File descriptor of the file to be read.
 
-- The second parameter is the address of a pointer to a character that will be used to save the line read from the file descriptor.
+3. **Example Usage:**
+   ```c
+   #include "get_next_line.h"
+   #include <fcntl.h>
+   #include <stdio.h>
 
-- The return value can be **1, 0 or -1** depending on whether a line has been read, when the reading has been completed, or if an error has happened respectively.
+   int main(void)
+   {
+       int fd = open("example.txt", O_RDONLY);
+       char *line;
 
-- Your function **get_next_line** must return its result _without_ **’\n’**.
+       while ((line = get_next_line(fd)) != NULL)
+       {
+           printf("%s", line);
+           free(line);
+       }
+       close(fd);
+       return 0;
+   }
+   ```
 
-- Calling your function **get_next_line** in a loop will then allow you to read the text available on a file descriptor one line at a time until the end of the text, no matter the size of either the text or one of its lines.
+## Implementation Details
 
-- Make sure that your function behaves well when it reads from a file, from the standard output, from a redirection etc.
+- **Buffer Size:** Defined by the macro `BUFFER_SIZE` in `get_next_line.h`. Adjust this value to optimize performance based on expected line lengths and system capabilities.
 
-- In you header file get_next_line.h you must have at least the prototype of the function **get_next_line** and a macro that allows to choose the size of the reading buffer for the read function. This value will be modified during the defence to evaluate the strength of your function. That macro must be named BUFF_SIZE. For example:
-```c
-#define BUFF_SIZE 32
-```
+- **Static Variables:** Utilized to retain data between function calls, allowing the function to handle lines that span multiple reads.
 
-- We consider that get_next_line has an undefined behaviour if, between two calls,
-the same file descriptor designs two distinct files although the reading from the first
-file was not completed.
+- **Edge Cases Handled:**
+  - Lines longer than the buffer size.
+  - Files without newline characters.
+  - Proper memory management to prevent leaks.
 
-- We consider also that a call to lseek(2) will never take place between two calls of
-the function get_next_line on the same file descriptor.
+## Testing
 
-- Finally we consider that get_next_line has an undefined behaviour when reading
-from a binary file. However, if you wish, you can make this behaviour coherent.
+To test the `get_next_line` function:
 
-- Global variables are forbidden.
+1. **Create a Test File:** Prepare a text file (`test.txt`) with various line lengths and content.
 
-- Static variables are allowed.
+2. **Compile with a Test Program:** Use a test program (e.g., `main.c`) that calls `get_next_line` and outputs the results.
 
-# Bonuses
-The project **get_next_line** is straight forward and leaves very little room for bonuses, but I am sure that you have a lot of imagination. If you ace perfectly the mandatory part, then by all means complete this bonus part to go furher. I repeat, no bonus will be taken into consideration if the mandatory part isn’t perfect.
+3. **Run the Test:**
+   ```bash
+   gcc -Wall -Wextra -Werror main.c get_next_line.c get_next_line_utils.c -o gnl_test
+   ./gnl_test
+   ```
 
-- To succeed **get_next_line** with a single static variable.
+4. **Verify Output:** Ensure the output matches the content of the test file, line by line.
 
-- To be able to manage multiple file descriptor with your **get_next_line**. For example, if the file descriptors 3, 4 and 5 are accessible for reading, then you can call **get_next_line** once on 3, once on 4, once again on 3 then once on 5 etc. without losing the reading thread on each of the descriptors.
+## Learning Outcomes
+
+Through this project, the following concepts are reinforced:
+
+- **File I/O Operations:** Understanding how to open, read, and close files in C.
+- **Dynamic Memory Allocation:** Managing memory for buffers and ensuring no leaks occur.
+- **Static Variables:** Using static variables to maintain state across function calls.
+- **Buffer Management:** Efficiently handling data that may not fit into a single read operation.
+
+## Acknowledgments
+
+This project is part of the curriculum at 42 School, designed to deepen understanding of file handling and memory management in C.
